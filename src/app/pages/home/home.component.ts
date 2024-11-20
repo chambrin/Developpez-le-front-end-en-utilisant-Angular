@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Router } from '@angular/router'; // Ajouter cet import
 import { Observable } from 'rxjs';
-
 import { Chart, ChartType } from 'chart.js';
-import {Olympic} from "../../core/models/Olympic";
-import {OlympicService} from "../../core/services/olympic.service";
+import { Olympic } from "../../core/models/Olympic";
+import { OlympicService } from "../../core/services/olympic.service";
 
 @Component({
   selector: 'app-home',
@@ -14,14 +14,16 @@ export class HomeComponent implements OnInit {
   @ViewChild('pieChart') pieChart!: ElementRef;
   olympics$!: Observable<Olympic[] | null>;
 
-  constructor(private olympicService: OlympicService) {}
+  constructor(
+    private olympicService: OlympicService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.olympics$ = this.olympicService.getOlympics();
     this.olympicService.loadInitialData().subscribe({
       next: (data) => {
         if (data) {
-          // On attend le prochain cycle pour s'assurer que la vue est bien initialisée
           setTimeout(() => {
             this.createChart(data);
           }, 0);
@@ -48,7 +50,6 @@ export class HomeComponent implements OnInit {
       return;
     }
 
-    // Forcer les dimensions du canvas
     canvas.width = 400;
     canvas.height = 400;
 
@@ -73,10 +74,26 @@ export class HomeComponent implements OnInit {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements && elements.length > 0) {
+            const index = elements[0].index;
+            const countryId = data[index].id;
+            this.router.navigate(['/detail', countryId]);
+          }
+        },
         plugins: {
           legend: {
             display: true,
             position: 'top'
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const label = context.label || '';
+                const value = context.raw || 0;
+                return `${label}: ${value} médailles`;
+              }
+            }
           }
         }
       }
