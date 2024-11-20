@@ -65,6 +65,7 @@ export class DetailComponent implements OnInit {
     );
   }
 
+
   private createLineChart(country: Olympic): void {
     const ctx = this.lineChart?.nativeElement?.getContext('2d');
     if (!ctx) return;
@@ -73,24 +74,55 @@ export class DetailComponent implements OnInit {
       type: 'line' as ChartType,
       data: {
         labels: country.participations.map(p => p.year.toString()),
-        datasets: [{
-          label: 'Nombre de médailles',
-          data: country.participations.map(p => p.medalsCount),
-          fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1
-        }]
+        datasets: [
+          {
+            label: 'Nombre de médailles',
+            data: country.participations.map(p => p.medalsCount),
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgb(255, 99, 132)',
+            tension: 0.1,
+            pointRadius: 6,
+            pointHoverRadius: 8
+          }
+        ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
         plugins: {
           legend: {
             position: 'top',
+            labels: {
+              usePointStyle: true,
+              padding: 20
+            }
           },
           title: {
             display: true,
-            text: 'Évolution des médailles par année'
+            text: `Nombre de médailles pour ${country.country}`,
+            font: {
+              size: 16,
+              weight: 'bold'
+            },
+            padding: 20
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            padding: 12,
+            callbacks: {
+              title: (tooltipItems) => {
+                const item = tooltipItems[0];
+                const participation = country.participations[item.dataIndex];
+                return `${participation.year} - ${participation.city}`;
+              },
+              label: (context) => {
+                return `Médailles: ${context.raw}`;
+              }
+            }
           }
         },
         scales: {
@@ -98,13 +130,28 @@ export class DetailComponent implements OnInit {
             beginAtZero: true,
             title: {
               display: true,
-              text: 'Nombre de médailles'
+              text: 'Nombre de médailles',
+              font: {
+                weight: 'bold'
+              }
+            },
+            ticks: {
+              stepSize: 1
+            },
+            grid: {
+              color: 'rgba(0, 0, 0, 0.1)'
             }
           },
           x: {
+            grid: {
+              color: 'rgba(0, 0, 0, 0.1)'
+            },
             title: {
               display: true,
-              text: 'Année'
+              text: 'Année',
+              font: {
+                weight: 'bold'
+              }
             }
           }
         }

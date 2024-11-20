@@ -1,21 +1,26 @@
 <div class="container" *ngIf="country$ | async as country">
-  <button class="back-button" (click)="onBack()">← Retour</button>
+  <button class="btn-back" (click)="onBack()">
+    <span class="arrow">←</span> Retour
+  </button>
 
-  <h1>{{ country.country }}</h1>
+  <h2>{{ country.country }}</h2>
 
   <div class="stats">
-    <div class="stat-item">
+    <div class="stat-card">
       <h3>Participations</h3>
-      <p>{{ country.participations.length }}</p>
+      <div class="stat-value">{{ country.participations.length }}</div>
     </div>
-    <div class="stat-item">
-      <h3>Total Médailles</h3>
-      <p>{{ getTotalMedals(country) }}</p>
+    <div class="stat-card">
+      <h3>Total médailles</h3>
+      <div class="stat-value">{{ getTotalMedals(country) }}</div>
     </div>
-    <div class="stat-item">
-      <h3>Total Athlètes</h3>
-      <p>{{ getTotalAthletes(country) }}</p>
+    <div class="stat-card">
+      <h3>Total athlètes</h3>
+      <div class="stat-value">{{ getTotalAthletes(country) }}</div>
     </div>
   </div>
 
+  <div class="chart-container">
+    <canvas #lineChart></canvas>
+  </div>
 </div>
