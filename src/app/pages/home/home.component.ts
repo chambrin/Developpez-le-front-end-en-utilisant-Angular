@@ -1,9 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Router } from '@angular/router'; // Ajouter cet import
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Chart, ChartType } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Olympic } from "../../core/models/Olympic";
 import { OlympicService } from "../../core/services/olympic.service";
+
+Chart.register(ChartDataLabels);
 
 @Component({
   selector: 'app-home',
@@ -24,36 +27,20 @@ export class HomeComponent implements OnInit {
     this.olympicService.loadInitialData().subscribe({
       next: (data) => {
         if (data) {
-          setTimeout(() => {
-            this.createChart(data);
-          }, 0);
+          setTimeout(() => this.createChart(data), 0);
         }
       },
-      error: (error) => {
-        console.error('Erreur lors du chargement des données:', error);
-      }
+      error: (error) => console.error('Erreur:', error)
     });
   }
 
   private getTotalMedals(country: Olympic): number {
-    return country.participations.reduce((total, participation) =>
-      total + participation.medalsCount, 0
-    );
+    return country.participations.reduce((total, p) => total + p.medalsCount, 0);
   }
 
   private createChart(data: Olympic[]): void {
-    const canvas = this.pieChart?.nativeElement;
-    const ctx = canvas?.getContext('2d');
-
-    if (!ctx) {
-      console.error('Impossible d\'obtenir le contexte 2D');
-      return;
-    }
-
-    canvas.width = 400;
-    canvas.height = 400;
-
-    console.log('Création du graphique avec les données:', data);
+    const ctx = this.pieChart?.nativeElement?.getContext('2d');
+    if (!ctx) return;
 
     new Chart(ctx, {
       type: 'pie' as ChartType,
@@ -67,13 +54,15 @@ export class HomeComponent implements OnInit {
             'rgb(255, 205, 86)',
             'rgb(75, 192, 192)',
             'rgb(153, 102, 255)'
-          ],
-          hoverOffset: 4
+          ]
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: 50
+        },
         onClick: (event, elements) => {
           if (elements && elements.length > 0) {
             const index = elements[0].index;
@@ -83,15 +72,24 @@ export class HomeComponent implements OnInit {
         },
         plugins: {
           legend: {
-            display: true,
-            position: 'top'
+            display: false
+          },
+          datalabels: {
+            color: '#333',
+            formatter: (value, context) => {
+              return data[context.dataIndex].country;
+            },
+            font: {
+              size: 14
+            },
+            align: 'end',
+            anchor: 'end',
+            offset: 20
           },
           tooltip: {
             callbacks: {
               label: (context) => {
-                const label = context.label || '';
-                const value = context.raw || 0;
-                return `${label}: ${value} médailles`;
+                return `${context.raw} médailles`;
               }
             }
           }
@@ -100,3 +98,4 @@ export class HomeComponent implements OnInit {
     });
   }
 }
+

@@ -19,6 +19,8 @@
     "@angular/platform-browser-dynamic": "^18.0.3",
     "@angular/router": "^18.0.3",
     "chart.js": "^4.4.6",
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "chartjs-plugin-piechart-outlabels": "^0.1.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
