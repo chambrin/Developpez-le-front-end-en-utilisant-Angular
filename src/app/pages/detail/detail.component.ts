@@ -1,4 +1,3 @@
-// detail.component.ts
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map, switchMap } from 'rxjs';
@@ -8,37 +7,8 @@ import { OlympicService } from '../../core/services/olympic.service';
 
 @Component({
   selector: 'app-detail',
-  template: `
-    <div class="container" *ngIf="country$ | async as country">
-      <button (click)="onBack()">Retour</button>
-      <h2>{{ country.country }}</h2>
-
-      <div class="stats">
-        <div>Participations: {{ country.participations.length }}</div>
-        <div>Total médailles: {{ getTotalMedals(country) }}</div>
-        <div>Total athlètes: {{ getTotalAthletes(country) }}</div>
-      </div>
-
-      <div class="chart-container">
-        <canvas #lineChart></canvas>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .container {
-      padding: 20px;
-    }
-    .stats {
-      display: flex;
-      justify-content: space-around;
-      margin: 20px 0;
-    }
-    .chart-container {
-      height: 400px;
-      width: 800px;
-      margin: 20px auto;
-    }
-  `]
+  templateUrl: './detail.component.html',
+  styleUrls: ['./detail.component.scss']
 })
 export class DetailComponent implements OnInit {
   @ViewChild('lineChart') lineChart!: ElementRef;
@@ -64,7 +34,6 @@ export class DetailComponent implements OnInit {
       ))
     );
   }
-
 
   private createLineChart(country: Olympic): void {
     const ctx = this.lineChart?.nativeElement?.getContext('2d');
@@ -114,7 +83,7 @@ export class DetailComponent implements OnInit {
               boxWidth: 10,
               padding: 10,
               font: {
-                size: 12 
+                size: 12
               }
             }
           }
@@ -122,7 +91,6 @@ export class DetailComponent implements OnInit {
       }
     });
   }
-
 
   getTotalMedals(country: Olympic): number {
     return country.participations.reduce((sum, p) => sum + p.medalsCount, 0);

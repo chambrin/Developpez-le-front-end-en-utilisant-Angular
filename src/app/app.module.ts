@@ -6,15 +6,24 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { Chart, registerables } from 'chart.js';
-import {DetailComponent} from "./pages/detail/detail.component"; // Importation de Chart.js
+import { DetailComponent } from './pages/detail/detail.component';
 
 // Enregistrement des composants Chart.js
 Chart.register(...registerables);
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, NotFoundComponent, DetailComponent],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    NotFoundComponent,
+    DetailComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule
+  ],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

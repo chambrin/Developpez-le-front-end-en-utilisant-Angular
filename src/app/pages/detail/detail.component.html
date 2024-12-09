@@ -3,11 +3,20 @@
 
   <h1>{{ country.country }}</h1>
 
-  <p class="info">
-    Participations: {{ country.participations.length }}
-    Total médailles: {{ getTotalMedals(country) }}
-    Total athlètes: {{ getTotalAthletes(country) }}
-  </p>
+  <div class="stats-container">
+    <div class="stat-box">
+      <h3>Participations</h3>
+      <p>{{ country.participations.length }}</p>
+    </div>
+    <div class="stat-box">
+      <h3>Total médailles</h3>
+      <p>{{ getTotalMedals(country) }}</p>
+    </div>
+    <div class="stat-box">
+      <h3>Total athlètes</h3>
+      <p>{{ getTotalAthletes(country) }}</p>
+    </div>
+  </div>
 
   <div class="chart-wrapper">
     <canvas #lineChart></canvas>
