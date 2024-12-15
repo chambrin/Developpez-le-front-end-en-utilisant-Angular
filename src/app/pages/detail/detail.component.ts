@@ -26,9 +26,11 @@ export class DetailComponent implements OnInit {
       switchMap(id => this.olympicService.getOlympics().pipe(
         map(olympics => {
           const country = olympics?.find(olympic => olympic.id === +id);
-          if (country) {
-            setTimeout(() => this.createLineChart(country), 0);
+          if (!country) {
+            this.router.navigate(['/not-found']); // redirection vers une page 404 si la data ne son pas disponible
+            return undefined;
           }
+          setTimeout(() => this.createLineChart(country), 0);
           return country;
         })
       ))
