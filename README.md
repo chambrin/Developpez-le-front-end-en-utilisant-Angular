@@ -3,7 +3,7 @@
 Ce projet a été généré avec [Angular CLI](https://github.com/angular/angular-cli) version 18.0.3.
 
 N'oubliez pas d'installer vos `node_modules` avant de commencer (`npm install`).
-
+![screen.png](src/assets/screen.png)
 ## Serveur de développement
 
 Exécutez `ng serve` pour démarrer un serveur de développement. Accédez à `http://localhost:4200/`. L'application se rechargera automatiquement si vous modifiez l'un des fichiers source.
