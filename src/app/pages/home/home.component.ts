@@ -60,7 +60,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             'rgb(148, 169, 219)',
             'rgb(132, 105, 123)',
             'rgb(197, 212, 240)',
-            'rgb(197, 212, 240)',  
+            'rgb(197, 212, 240)',
           ]
         }]
       },
@@ -94,12 +94,21 @@ export class HomeComponent implements OnInit, OnDestroy {
             offset: 20
           },
           tooltip: {
+            enabled: true,
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleColor: 'white',
+            bodyColor: 'white',
+            padding: 10,
+            displayColors: false,
             callbacks: {
               label: (context) => {
-                return `${context.raw} médailles`;
+                return `🏅 ${context.raw} médailles`;
+              },
+              title: (tooltipItems) => {
+                return data[tooltipItems[0].dataIndex].country;
               }
             }
-          }
+          },
         }
       }
     });
