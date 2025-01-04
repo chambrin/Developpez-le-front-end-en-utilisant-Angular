@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Chart, ChartType } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Olympic } from "../../core/models/Olympic";
@@ -13,9 +13,10 @@ Chart.register(ChartDataLabels);
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('pieChart') pieChart!: ElementRef;
   olympics$!: Observable<Olympic[] | null>;
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private olympicService: OlympicService,
@@ -24,7 +25,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.olympics$ = this.olympicService.getOlympics();
-    this.olympicService.loadInitialData().subscribe({
+    const sub = this.olympicService.loadInitialData().subscribe({
       next: (data) => {
         if (data) {
           setTimeout(() => this.createChart(data), 0);
@@ -32,6 +33,11 @@ export class HomeComponent implements OnInit {
       },
       error: (error) => console.error('Erreur:', error)
     });
+    this.subscription.add(sub);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   private getTotalMedals(country: Olympic): number {
@@ -49,11 +55,12 @@ export class HomeComponent implements OnInit {
         datasets: [{
           data: data.map(country => this.getTotalMedals(country)),
           backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)',
-            'rgb(75, 192, 192)',
-            'rgb(153, 102, 255)'
+            'rgb(139, 94, 94)',
+            'rgb(139, 94, 94)',
+            'rgb(148, 169, 219)',
+            'rgb(132, 105, 123)',
+            'rgb(197, 212, 240)',
+            'rgb(197, 212, 240)',  
           ]
         }]
       },
@@ -98,4 +105,3 @@ export class HomeComponent implements OnInit {
     });
   }
 }
-
