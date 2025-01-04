@@ -28,6 +28,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     return data[0].participations.length;
   }
 
+  private removeTooltip(): void {
+    const tooltipEl = document.getElementById('chartjs-tooltip');
+    if (tooltipEl) {
+      tooltipEl.remove();
+    }
+  }
+
   ngOnInit(): void {
     this.olympics$ = this.olympicService.getOlympics();
     const sub = this.olympicService.loadInitialData().subscribe({
@@ -42,6 +49,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.removeTooltip();
     this.subscription.unsubscribe();
   }
 
@@ -55,31 +63,31 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     const styleElement = document.createElement('style');
     styleElement.textContent = `
-      #chartjs-tooltip {
-        background: #02838F;
-        border-radius: 3px;
-        color: white;
-        opacity: 0;
-        pointer-events: none;
-        position: absolute;
-        transform: translate(-50%, 0);
-        transition: all .1s ease;
-      }
-      .tooltip-title {
-        font-weight: bold;
-        margin-bottom: 6px;
-        text-align: center;
-      }
-      .tooltip-body {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .medal-icon {
-        width: 20px;
-        height: 20px;
-      }
-    `;
+     #chartjs-tooltip {
+       background: #02838F;
+       border-radius: 3px;
+       color: white;
+       opacity: 0;
+       pointer-events: none;
+       position: absolute;
+       transform: translate(-50%, 0);
+       transition: all .1s ease;
+     }
+     .tooltip-title {
+       font-weight: bold;
+       margin-bottom: 6px;
+       text-align: center;
+     }
+     .tooltip-body {
+       display: flex;
+       align-items: center;
+       gap: 8px;
+     }
+     .medal-icon {
+       width: 20px;
+       height: 20px;
+     }
+   `;
     document.head.appendChild(styleElement);
 
     new Chart(ctx, {
@@ -108,6 +116,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           if (elements && elements.length > 0) {
             const index = elements[0].index;
             const countryId = data[index].id;
+            this.removeTooltip();
             this.router.navigate(['/detail', countryId]);
           }
         },
@@ -151,12 +160,12 @@ export class HomeComponent implements OnInit, OnDestroy {
                 const title = data[dataPoint.dataIndex].country;
 
                 tooltipEl.innerHTML = `
-        <div class="tooltip-title">${title}</div>
-        <div class="tooltip-body">
-          <img src="assets/Medal.png" class="medal-icon" alt="Medal icon" />
-          <span>${value}</span>
-        </div>
-      `;
+                 <div class="tooltip-title">${title}</div>
+                 <div class="tooltip-body">
+                   <img src="assets/Medal.png" class="medal-icon" alt="Medal icon" />
+                   <span>${value}</span>
+                 </div>
+               `;
               }
 
               const position = context.chart.canvas.getBoundingClientRect();
