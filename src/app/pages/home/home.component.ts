@@ -25,9 +25,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   protected getNumberOfJOs(data: Olympic[]): number {
     if (!data || data.length === 0) return 0;
-    // Tous les pays participent aux mêmes JOs, donc on peut prendre le premier pays
     return data[0].participations.length;
   }
+
   ngOnInit(): void {
     this.olympics$ = this.olympicService.getOlympics();
     const sub = this.olympicService.loadInitialData().subscribe({
@@ -52,6 +52,35 @@ export class HomeComponent implements OnInit, OnDestroy {
   private createChart(data: Olympic[]): void {
     const ctx = this.pieChart?.nativeElement?.getContext('2d');
     if (!ctx) return;
+
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+      #chartjs-tooltip {
+        background: #02838F;
+        border-radius: 3px;
+        color: white;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        transform: translate(-50%, 0);
+        transition: all .1s ease;
+      }
+      .tooltip-title {
+        font-weight: bold;
+        margin-bottom: 6px;
+        text-align: center;
+      }
+      .tooltip-body {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .medal-icon {
+        width: 20px;
+        height: 20px;
+      }
+    `;
+    document.head.appendChild(styleElement);
 
     new Chart(ctx, {
       type: 'pie' as ChartType,
@@ -99,21 +128,50 @@ export class HomeComponent implements OnInit, OnDestroy {
             offset: 20
           },
           tooltip: {
-            enabled: true,
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            titleColor: 'white',
-            bodyColor: 'white',
-            padding: 10,
-            displayColors: false,
-            callbacks: {
-              label: (context) => {
-                return `🏅 ${context.raw} médailles`;
-              },
-              title: (tooltipItems) => {
-                return data[tooltipItems[0].dataIndex].country;
+            enabled: false,
+            external: (context) => {
+              const tooltipEl = document.getElementById('chartjs-tooltip') ||
+                (() => {
+                  const el = document.createElement('div');
+                  el.id = 'chartjs-tooltip';
+                  document.body.appendChild(el);
+                  return el;
+                })();
+
+              const tooltipModel = context.tooltip;
+
+              if (tooltipModel.opacity === 0) {
+                tooltipEl.style.opacity = '0';
+                return;
               }
+
+              if (tooltipModel.body) {
+                const dataPoint = tooltipModel.dataPoints[0];
+                const value = dataPoint.raw;
+                const title = data[dataPoint.dataIndex].country;
+
+                tooltipEl.innerHTML = `
+        <div class="tooltip-title">${title}</div>
+        <div class="tooltip-body">
+          <img src="assets/Medal.png" class="medal-icon" alt="Medal icon" />
+          <span>${value}</span>
+        </div>
+      `;
+              }
+
+              const position = context.chart.canvas.getBoundingClientRect();
+
+              tooltipEl.style.fontSize = '14px';
+              tooltipEl.style.opacity = '1';
+              tooltipEl.style.padding = '8px 12px';
+
+              const left = position.left + window.pageXOffset + tooltipModel.caretX;
+              const top = position.top + window.pageYOffset + tooltipModel.caretY;
+
+              tooltipEl.style.left = left + 'px';
+              tooltipEl.style.top = top + 'px';
             }
-          },
+          }
         }
       }
     });
