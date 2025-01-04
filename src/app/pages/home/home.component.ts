@@ -23,6 +23,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router
   ) {}
 
+  protected getNumberOfJOs(data: Olympic[]): number {
+    if (!data || data.length === 0) return 0;
+    // Tous les pays participent aux mêmes JOs, donc on peut prendre le premier pays
+    return data[0].participations.length;
+  }
   ngOnInit(): void {
     this.olympics$ = this.olympicService.getOlympics();
     const sub = this.olympicService.loadInitialData().subscribe({

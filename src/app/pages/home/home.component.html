@@ -1,8 +1,14 @@
-<div class="container">
+<div class="container" *ngIf="olympics$ | async as olympicsData">
   <h2>Medals per Country</h2>
   <div class="stats-container">
-    <app-box [title]="'Number of JOs'" [value]="3"></app-box>
-    <app-box [title]="'Number of countries'" [value]="5"></app-box>
+    <app-box
+      [title]="'Number of JOs'"
+      [value]="getNumberOfJOs(olympicsData)"
+    ></app-box>
+    <app-box
+      [title]="'Number of countries'"
+      [value]="olympicsData.length"
+    ></app-box>
   </div>
 
   <div class="chart-container">
