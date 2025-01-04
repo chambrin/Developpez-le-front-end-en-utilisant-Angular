@@ -7,6 +7,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { Chart, registerables } from 'chart.js';
 import { DetailComponent } from './pages/detail/detail.component';
+import { BoxComponent } from './box/box.component';
 
 // Enregistrement des composants Chart.js
 Chart.register(...registerables);
@@ -21,7 +22,8 @@ Chart.register(...registerables);
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    BoxComponent  // Import de BoxComponent ici
   ],
   providers: [],
   bootstrap: [AppComponent]

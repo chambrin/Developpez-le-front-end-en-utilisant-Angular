@@ -1,62 +1,11 @@
-<!--
-  Container principal avec ngIf qui attend la résolution de l'Observable country$
-  Le pipe 'async' permet de :
-  1. S'abonner automatiquement à l'Observable
-  2. Récupérer la dernière valeur émise
-  3. Se désabonner automatiquement à la destruction du composant
-  'as country' stocke le résultat dans une variable template 'country'
--->
 <div class="container" *ngIf="country$ | async as country">
-  <!--
-    Bouton de retour qui appelle la méthode onBack() du composant
-    Cette méthode gère la navigation vers la page précédente
-  -->
   <button (click)="onBack()">Retour</button>
-
-  <!--
-    Affiche le nom du pays
-    L'interpolation {{ }} permet d'afficher la valeur de country.country
-  -->
   <h1>{{ country.country }}</h1>
-
-  <!--
-    Container pour les statistiques
-    Affiche 3 boîtes avec différentes statistiques
-  -->
   <div class="stats-container">
-    <!--
-      Première boîte : nombre de participations
-      Utilise la longueur du tableau des participations
-    -->
-    <div class="stat-box">
-      <h3>Participations</h3>
-      <p>{{ country.participations.length }}</p>
-    </div>
-
-    <!--
-      Deuxième boîte : total des médailles
-      Appelle la méthode getTotalMedals() du composant
-    -->
-    <div class="stat-box">
-      <h3>Total médailles</h3>
-      <p>{{ getTotalMedals(country) }}</p>
-    </div>
-
-    <!--
-      Troisième boîte : total des athlètes
-      Appelle la méthode getTotalAthletes() du composant
-    -->
-    <div class="stat-box">
-      <h3>Total athlètes</h3>
-      <p>{{ getTotalAthletes(country) }}</p>
-    </div>
+    <app-box [title]="'Participations'" [value]="country.participations.length"></app-box>
+    <app-box [title]="'Total médailles'" [value]="getTotalMedals(country)"></app-box>
+    <app-box [title]="'Total athlètes'" [value]="getTotalAthletes(country)"></app-box>
   </div>
-
-  <!--
-    Container pour le graphique
-    #lineChart est une référence de template utilisée dans le composant
-    pour initialiser le graphique Chart.js
-  -->
   <div class="chart-wrapper">
     <canvas #lineChart></canvas>
   </div>
